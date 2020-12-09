@@ -1,4 +1,9 @@
 --Coded by Albo1125.
+--Additions and re-engineering by TrevorBarns
+
+TriggerEvent('chat:addSuggestion', '/jail', 'Jail subject.', {{ name="password", help="Please enter department issued password."}, { name="id", help="Server ID"}, { name="duration", help="Duration in seconds; default: 10"}})
+TriggerEvent('chat:addSuggestion', '/hospitalize', 'Transport subject seeking medical treatment.', {{ name="id", help="Server ID"}, { name="location", help="pillbox or sandy; default: pillbox"}})
+
 
 penitentiary = {x = 1677.233, y = 2658.618, z = 45.216}
 penitentiaryR = {x = 1855.807, y = 2601.949, z = 45.323}
