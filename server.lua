@@ -1,39 +1,18 @@
 --Coded by Albo1125.
 
-local jailPassword = "pswd" --change this password to your liking and don't share it with the criminals ;-)
-local defaultsecs = 180
-local maxsecs = 1000
+local jailPassword = "pswd"
+local defaultHospital = "pillbox"
+local defaultsecs = 10
+local maxsecs = 60
 
+-----------------------------
+local locShort = nil
+local locName = nil
 -----------------------------
 
 AddEventHandler('chatMessage', function(source, n, message)
     cm = stringsplit(message, " ")
-
-    if(cm[1] == "/jailme") then
-		CancelEvent()
-		local jT = defaultsecs
-		if cm[2] ~= nil then
-			jT = tonumber(cm[2])				
-		end
-		if jT > maxsecs then
-			jT = maxsecs
-		end
-		
-		print("Jailing ".. GetPlayerName(source) .. " for ".. jT .." secs")
-		TriggerClientEvent("JP", source, jT)
-		TriggerClientEvent('chatMessage', -1, 'JUDGE', { 0, 0, 0 }, GetPlayerName(source) ..' jailed for '.. jT ..' secs')
-    elseif cm[1] == "/unjail" then
-		CancelEvent()
-		if cm[2] == jailPassword then
-			local tPID = tonumber(cm[3])
-			if GetPlayerName(tPID) ~= nil then
-				print("Unjailing ".. GetPlayerName(tPID).. " - cm entered by ".. GetPlayerName(source))
-				TriggerClientEvent("UnJP", tPID)
-			end
-		else
-			print("Incorrect jailPassword entered by ".. GetPlayerName(source))
-		end
-	elseif cm[1] == "/jail" then
+	if cm[1] == "/jail" then
 		CancelEvent()
 		if tablelength(cm) > 2 then
 			if cm[2] == jailPassword then
@@ -48,7 +27,7 @@ AddEventHandler('chatMessage', function(source, n, message)
 					jT = maxsecs
 				end
 				if GetPlayerName(tPID) ~= nil then
-					print("Jailing ".. GetPlayerName(tPID).. " for ".. jT .." secs - cm entered by ".. GetPlayerName(source))
+					print("Jailing ".. GetPlayerName(tPID).. " for ".. jT .." secs - entered by ".. GetPlayerName(source))
 					TriggerClientEvent("JP", tPID, jT)
 					TriggerClientEvent('chatMessage', -1, 'JUDGE', { 0, 0, 0 }, GetPlayerName(tPID) ..' jailed for '.. jT ..' secs')
 				end
@@ -58,6 +37,29 @@ AddEventHandler('chatMessage', function(source, n, message)
 		end
 	end
 end)
+
+AddEventHandler('chatMessage', function(source, n, message)
+    cm = stringsplit(message, " ")
+    if cm[1] == "/hospitalize" then
+		CancelEvent()
+		if tablelength(cm) > 1 then
+			local tPID = tonumber(cm[2])
+			local hT = defaultsecs
+			if tablelength(cm) > 2 then
+				loc = locLookup(cm[3])
+			else
+				loc = locLookup(defaultHospital)
+			end
+			
+			if GetPlayerName(tPID) ~= nil then
+				print("Hospitalizing ".. GetPlayerName(tPID).. " for ".. hT .." secs at " .. locName .. " - entered by ".. GetPlayerName(source))
+				TriggerClientEvent("HP", tPID, hT, locShort)
+				TriggerClientEvent('chatMessage', -1, 'Doctor', { 0, 0, 0 }, GetPlayerName(tPID) ..' is in recovery for '.. hT ..' secs at '.. locName)
+			end
+		end
+	end
+end)
+
 
 print('Jailer by Albo1125 (LUA, FXServer, FiveM).')
 function stringsplit(inputstr, sep)
@@ -77,4 +79,16 @@ function tablelength(T)
   for _ in pairs(T) do count = count + 1 end
   return count
 end
+
+function locLookup(str)
+	if str == "sandy" then
+		locShort = str
+		locName = "Sandy Shores Medical Center [3004]"
+	else 
+		locShort = "pillbox"
+		locName = "Pillbox Hill Medical Center [8038]"
+	end
+end
+
+
 --Coded by Albo1125
